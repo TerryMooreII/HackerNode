@@ -1,0 +1,18 @@
+{
+  "author": "Terry Moore",
+  "name": "HackerNode",
+  "description": "Hacker News on the console with Node.js",
+  "keywords": ["hackernews"],
+  "version": "0.1.0",
+  "repository":   {
+    "type": "git",
+    "url": "git://github.com/TerryMooreII/hackernode.git"
+  },
+  "main": "./app.js",
+  "engines": {
+    "node": ">= 0.8"
+  },
+  "dependencies": {
+    "cheerio" : "*"
+  }
+}
