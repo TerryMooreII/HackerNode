@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "cheerio" : "*",
-    "cli-color": "*",
-    "xcolor": "*"
+    "xcolor": "*",
+    "underscore": "*"
   }
 }
