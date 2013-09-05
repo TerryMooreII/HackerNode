@@ -105,6 +105,8 @@ var openUrl = function(url){
     var cmd = 'xdg-open';
     if (!!process.platform.match(/^win/))
         cmd = 'start';
+    else if(!!process.platform.match(/^dar/))
+        cmd = 'open';
 
     exec(cmd + ' ' + url,  function (error, stdout, stderr) {
         //console.log(stdout)
@@ -125,26 +127,28 @@ var getInput = function(items){
     rl.question("Command> ", function(cmd) {
         
         if (isNaN(cmd)){
-            var page = doCommand(cmd);
+            var page = getPageUri(cmd);
             go(page);
             rl.close();                    
         }else{
+            var timeout = 0;
             if (cmd > 0 && cmd <= items.length){
-                openUrl(items[cmd - 1].href);    
+                openUrl(items[cmd - 1].href);
+            }else{
+                timeout = 1000;
+                console.log('Invalid Command');
             }
 
-            console.log('Invalid Command');
-            
             setTimeout(function(){
                 go('news');
                 rl.close();    
-            }, 500)
+            }, timeout)
             
         }
     });
 }
 
-var doCommand = function(cmd){
+var getPageUri = function(cmd){
     switch(cmd){
         case "n":
         case "N":
