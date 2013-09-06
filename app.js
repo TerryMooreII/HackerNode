@@ -3,15 +3,16 @@
 var http = require('https');
 var cheerio = require('cheerio');
 var xcolor = require('xcolor');
-var _ = require('underscore');
 var readline = require('readline');
 var exec = require('child_process').exec;
 
-var title = '  Hacker News';
-var menu = '    [F] Front Page   [N] Newest   [#] Open News in Browser'
+var logo = '[Y]';
+var title = ' Hacker News';
+var menu = '    [F]ront Page   [N]ewest   [A]sk   [J]obs   [#] Open News in Browser';
 
 var terminalWidth = process.stdout.getWindowSize()[0];
 var host = 'news.ycombinator.com';
+var uri = 'news';
 
 var getHackerNews = function(page){
     
@@ -35,9 +36,10 @@ var getHackerNews = function(page){
             
             displayHeader(title);
 
-            _.each(items, function(item){
+            items.forEach(function(item){
                 display(item);
             });
+
             getInput(items);            
         });
     }
@@ -79,7 +81,8 @@ var rowSpace = function(size){
 }
 
 var displayHeader = function(title){
-    xcolor.log('{{bg #ff6600}}{{#000000}}' + title + menu + rowSpace(terminalWidth - title.length - menu.length ));
+    var spaceLen = terminalWidth - title.length - menu.length - logo.length;
+    xcolor.log('{{bg #ff6600}}{{#FFFFFF}}{{bold}}'  + logo + '{{#000000}}' + title + '{{/bold}}' +  menu +  rowSpace(spaceLen));
 }
 
 var display = function(item){
@@ -124,11 +127,11 @@ var getInput = function(items){
         output: process.stdout
     });
 
-    rl.question("Command> ", function(cmd) {
+    rl.question('HN> ', function(cmd) {
         
         if (isNaN(cmd)){
-            var page = getPageUri(cmd);
-            go(page);
+            uri = getPageUri(cmd);
+            go(uri);
             rl.close();                    
         }else{
             var timeout = 0;
@@ -140,7 +143,7 @@ var getInput = function(items){
             }
 
             setTimeout(function(){
-                go('news');
+                go(uri);
                 rl.close();    
             }, timeout)
             
@@ -154,6 +157,14 @@ var getPageUri = function(cmd){
         case "N":
             return "newest";
             break;
+        case "a":
+        case "A":
+            return "jobs";
+            break;
+        case "j":
+        case "J":
+            return "jobs";
+            break;
         case "q":
         case "Q":
             process.exit();
@@ -165,12 +176,10 @@ var getPageUri = function(cmd){
 }
 
 var go = function(page){
-    
     clearScreen();
     getHackerNews(page);
-    
 }
 
-go('news');
+go(uri);
 
 
