@@ -1,4 +1,5 @@
 
+'use strict';
 
 var http = require('https');
 var cheerio = require('cheerio');
@@ -22,7 +23,7 @@ var getHackerNews = function(page){
         port: 443
     };
 
-    callback = function(response) {
+    var callback = function(response) {
         var str = '';
 
         response.on('data', function (chunk) {
@@ -31,7 +32,6 @@ var getHackerNews = function(page){
 
         response.on('end', function () {
             var items = parsePage(str);
-            
             if (items.length === 0) process.exit();
             
             displayHeader(title);
@@ -39,55 +39,55 @@ var getHackerNews = function(page){
             items.forEach(function(item){
                 display(item);
             });
-
-            getInput(items);            
+            
+            getInput(items);
         });
-    }
+    };
 
     http.request(options, callback).end();
 };
 
 
 var parsePage = function(data){
-	var $ = cheerio.load(data);
-	var items = [];
-    $('td.title > a').each(function(k,v){
-    	var $this = $(this);
-    	if ($this.text().toLowerCase() === 'more') return;
-    	var item = {
-            id: k<9 ? (" " + (k+1) + ". ") : ((k+1) + ". "),
-    		title: $this.text() || '',
-    		href: $this.attr('href') || '',
-    		points: $this.parent('td').parent('tr').next('tr').children('td:nth-child(2)').children('span').html() || "0 points"
-    	};
-    	items.push(item);
+    var $ = cheerio.load(data);
+    var items = [];
+    $('td.title > a').each(function(k){
+        var $this = $(this);
+        if ($this.text().toLowerCase() === 'more') return;
+        var item = {
+            id: k<9 ? (' ' + (k+1) + '. ') : ((k+1) + '. '),
+            title: $this.text() || '',
+            href: $this.attr('href') || '',
+            points: $this.parent('td').parent('tr').next('tr').children('td:nth-child(2)').children('span').html() || '0 points'
+        };
+        items.push(item);
     });
     return items;
 };
 
 var rowWidth = function(item){
-  return terminalWidth 
+  return terminalWidth
     - (item.id.length)
-    - (item.title.length) 
+    - (item.title.length)
     - (item.points.length + 2 );
-}
+};
 
 var rowSpace = function(size){
-    var s = "";
+    var s = '';
     for (var i=0; i<size; i++)
-        s += " "
+        s += ' ';
     
     return s;
-}
+};
 
 var displayHeader = function(title){
     var spaceLen = terminalWidth - title.length - menu.length - logo.length;
     xcolor.log('{{bg #ff6600}}{{#FFFFFF}}{{bold}}'  + logo + '{{#000000}}' + title + '{{/bold}}' +  menu +  rowSpace(spaceLen));
-}
+};
 
 var display = function(item){
     xcolor.log('{{bg #FFFFFF}}{{#000000}}' + item.id + item.title + rowSpace(rowWidth(item)) + '(' + item.points + ')' );
-}
+};
 
 var clearScreen = function(){
     var cmd = 'clear';
@@ -95,13 +95,13 @@ var clearScreen = function(){
         cmd = 'cls';
 
     exec(cmd,  function (error, stdout, stderr) {
-        console.log(stdout)
+        console.log(stdout);
         if (error !== null) {
           console.log('exec error: ' + error);
           process.exit();
         }
     });
-}
+};
 
 
 var openUrl = function(url){
@@ -111,14 +111,14 @@ var openUrl = function(url){
     else if(!!process.platform.match(/^dar/))
         cmd = 'open';
 
-    exec(cmd + ' ' + url,  function (error, stdout, stderr) {
+    exec(cmd + ' ' + url,  function (error, stdout, stderr){
         //console.log(stdout)
         if (error !== null) {
           console.log('exec error: ' + error);
           process.exit();
         }
     });
-}
+};
 
 
 var getInput = function(items){
@@ -132,7 +132,7 @@ var getInput = function(items){
         if (isNaN(cmd)){
             uri = getPageUri(cmd);
             go(uri);
-            rl.close();                    
+            rl.close();
         }else{
             var timeout = 0;
             if (cmd > 0 && cmd <= items.length){
@@ -144,42 +144,35 @@ var getInput = function(items){
 
             setTimeout(function(){
                 go(uri);
-                rl.close();    
-            }, timeout)
-            
+                rl.close();
+            }, timeout);
         }
     });
-}
+};
 
 var getPageUri = function(cmd){
     switch(cmd){
-        case "n":
-        case "N":
-            return "newest";
-            break;
-        case "a":
-        case "A":
-            return "jobs";
-            break;
-        case "j":
-        case "J":
-            return "jobs";
-            break;
-        case "q":
-        case "Q":
+        case 'n':
+        case 'N':
+            return 'newest';
+        case 'a':
+        case 'A':
+            return 'jobs';
+        case 'j':
+        case 'J':
+            return 'jobs';
+        case 'q':
+        case 'Q':
             process.exit();
             break;
         default:
-            return "news"
-            break;
-    }   
-}
+            return 'news';
+    }
+};
 
 var go = function(page){
     clearScreen();
     getHackerNews(page);
-}
+};
 
 go(uri);
-
-
