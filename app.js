@@ -161,6 +161,10 @@ var getPageUri = function(cmd){
         case 'j':
         case 'J':
             return 'jobs';
+        case 'y':
+        case 'Y':
+            openUrl('https://' + host + '/news');
+            return uri;
         case 'q':
         case 'Q':
             process.exit();
