@@ -14,6 +14,8 @@ var menu = '    [F]ront Page   [N]ewest   [A]sk   [J]obs   [#] Open News in Brow
 var terminalWidth = process.stdout.getWindowSize()[0];
 var host = 'news.ycombinator.com';
 var uri = 'news';
+var cache = {}; //Need to impliment.  
+
 
 var getHackerNews = function(page){
     
@@ -31,22 +33,12 @@ var getHackerNews = function(page){
         });
 
         response.on('end', function () {
-            var items = parsePage(str);
-            if (items.length === 0) process.exit();
-            
-            displayHeader(title);
-
-            items.forEach(function(item){
-                display(item);
-            });
-            
-            getInput(items);
+            display(str);
         });
     };
 
     http.request(options, callback).end();
 };
-
 
 var parsePage = function(data){
     var $ = cheerio.load(data);
@@ -85,8 +77,23 @@ var displayHeader = function(title){
     xcolor.log('{{bg #ff6600}}{{#FFFFFF}}{{bold}}'  + logo + '{{#000000}}' + title + '{{/bold}}' +  menu +  rowSpace(spaceLen));
 };
 
-var display = function(item){
+var displayRow = function(item){
     xcolor.log('{{bg #f6f6ef}}{{#000000}}' + item.id + item.title + rowSpace(rowWidth(item)) + '(' + item.points + ')' );
+};
+
+var display = function(str){
+    
+
+    var items = parsePage(str);
+    if (items.length === 0) process.exit();
+    
+    displayHeader(title);
+
+    items.forEach(function(item){
+        displayRow(item);
+    });
+    
+    getInput(items);
 };
 
 var clearScreen = function(){
@@ -174,9 +181,9 @@ var getPageUri = function(cmd){
     }
 };
 
-var go = function(page){
+var go = function(uri){
     clearScreen();
-    getHackerNews(page);
+    getHackerNews(uri);
 };
 
 go(uri);
