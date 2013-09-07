@@ -9,7 +9,7 @@ var exec = require('child_process').exec;
 
 var logo = '[Y]';
 var title = ' Hacker News';
-var menu = '    [F]ront Page   [N]ewest   [A]sk   [J]obs   [#] Open News in Browser';
+var menu = '    [F]ront Page   [N]ewest   [A]sk   [J]obs   [#] Open News in Browser   [Q]uit';
 
 var terminalWidth = process.stdout.getWindowSize()[0];
 var host = 'news.ycombinator.com';
@@ -86,7 +86,7 @@ var displayHeader = function(title){
 };
 
 var display = function(item){
-    xcolor.log('{{bg #FFFFFF}}{{#000000}}' + item.id + item.title + rowSpace(rowWidth(item)) + '(' + item.points + ')' );
+    xcolor.log('{{bg #f6f6ef}}{{#000000}}' + item.id + item.title + rowSpace(rowWidth(item)) + '(' + item.points + ')' );
 };
 
 var clearScreen = function(){
