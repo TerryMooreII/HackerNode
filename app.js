@@ -17,11 +17,11 @@ var uri = 'news';
 var cache = {}; //Need to impliment.  
 
 
-var getHackerNews = function(page){
+var getHackerNews = function(uri){
     
     var options = {
         host: host,
-        path: '/' + page,
+        path: '/' + uri,
         port: 443
     };
 
@@ -33,12 +33,20 @@ var getHackerNews = function(page){
         });
 
         response.on('end', function () {
-            display(str);
+            var items = parsePage(str);
+            display(items);
         });
     };
 
     http.request(options, callback).end();
 };
+
+var addToCache = function(data){
+    cache[uri] = {};
+    cache[uri].time = new Date().getTime();
+    cache[uri].data = data;
+};
+
 
 var parsePage = function(data){
     var $ = cheerio.load(data);
@@ -54,6 +62,7 @@ var parsePage = function(data){
         };
         items.push(item);
     });
+    addToCache(items);
     return items;
 };
 
@@ -81,19 +90,18 @@ var displayRow = function(item){
     xcolor.log('{{bg #f6f6ef}}{{#000000}}' + item.id + item.title + rowSpace(rowWidth(item)) + '(' + item.points + ')' );
 };
 
-var display = function(str){
+var display = function(items){
     
-
-    var items = parsePage(str);
     if (items.length === 0) process.exit();
-    
+     
     displayHeader(title);
-
+   
     items.forEach(function(item){
         displayRow(item);
     });
-    
+   
     getInput(items);
+   
 };
 
 var clearScreen = function(){
@@ -164,7 +172,7 @@ var getPageUri = function(cmd){
             return 'newest';
         case 'a':
         case 'A':
-            return 'jobs';
+            return 'ask';
         case 'j':
         case 'J':
             return 'jobs';
@@ -182,8 +190,14 @@ var getPageUri = function(cmd){
 };
 
 var go = function(uri){
+    
     clearScreen();
+
+    // if (cache[uri] && cache[uri].data){
+    //     display(cache[uri].data);
+    // }else{
     getHackerNews(uri);
+    //}
 };
 
 go(uri);
