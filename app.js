@@ -5,6 +5,7 @@ var http = require('https');
 var cheerio = require('cheerio');
 var xcolor = require('xcolor');
 var readline = require('readline');
+var async = require('async');
 var exec = require('child_process').exec;
 
 var logo = '[Y]';
@@ -191,13 +192,22 @@ var getPageUri = function(cmd){
 
 var go = function(uri){
     
-    clearScreen();
+    async.series([
+        function(callback){
+            clearScreen();
+            callback();    
+        }
+    ], function(){
 
-    // if (cache[uri] && cache[uri].data){
-    //     display(cache[uri].data);
-    // }else{
-    getHackerNews(uri);
-    //}
+        if (cache[uri] && cache[uri].data){
+            display(cache[uri].data);
+        }else{
+            getHackerNews(uri);
+        }
+
+    });
+    
+
 };
 
 go(uri);
