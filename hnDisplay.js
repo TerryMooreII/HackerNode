@@ -1,4 +1,3 @@
-
 'use strict';
 
 var xcolor = require('xcolor');
@@ -34,6 +33,46 @@ var displayHeader = function(title){
 var displayRow = function(item){
     xcolor.log('{{bg #f6f6ef}}{{#000000}}' + item.id + item.title + rowSpace(rowWidth(item)) + '(' + item.points + ')' );
 };
+
+var openUrl = function(url){
+    var cmd = 'xdg-open';
+    if (!!process.platform.match(/^win/))
+        cmd = 'start';
+    else if(!!process.platform.match(/^dar/))
+        cmd = 'open';
+
+    exec(cmd + ' ' + url,  function (error, stdout, stderr){
+        //console.log(stdout)
+        if (error !== null) {
+          console.log('exec error: ' + error);
+          process.exit();
+        }
+    });
+};
+
+var getPageUri = function(cmd){
+    switch(cmd){
+        case 'n':
+        case 'N':
+            return 'newest';
+        case 'a':
+        case 'A':
+            return 'ask';
+        case 'j':
+        case 'J':
+            return 'jobs';
+        case 'y':
+        case 'Y':
+            return 'news';  //this should return current uri.
+        case 'q':
+        case 'Q':
+            process.exit();
+            break;
+        default:
+            return 'news';
+    }
+};
+
 
 exports.display = function(items){
     
@@ -92,44 +131,4 @@ exports.getInput = function(items, callback){
             }, timeout);
         }
     });
-};
-
-
-var openUrl = function(url){
-    var cmd = 'xdg-open';
-    if (!!process.platform.match(/^win/))
-        cmd = 'start';
-    else if(!!process.platform.match(/^dar/))
-        cmd = 'open';
-
-    exec(cmd + ' ' + url,  function (error, stdout, stderr){
-        //console.log(stdout)
-        if (error !== null) {
-          console.log('exec error: ' + error);
-          process.exit();
-        }
-    });
-};
-
-var getPageUri = function(cmd){
-    switch(cmd){
-        case 'n':
-        case 'N':
-            return 'newest';
-        case 'a':
-        case 'A':
-            return 'ask';
-        case 'j':
-        case 'J':
-            return 'jobs';
-        case 'y':
-        case 'Y':
-            return 'news';  //this should return current uri.
-        case 'q':
-        case 'Q':
-            process.exit();
-            break;
-        default:
-            return 'news';
-    }
 };
