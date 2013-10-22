@@ -1,3 +1,6 @@
+
+'use strict';
+
 var xcolor = require('xcolor');
 var readline = require('readline');
 var exec = require('child_process').exec;
@@ -46,12 +49,12 @@ exports.display = function(items){
 
 exports.clearScreen = function(callback){
     var cmd = 'clear';
-    if (!!process.platform.match(/^win/))
+    if (!!process.platform.match(/^win/));
         cmd = 'cls';
 
     exec(cmd,  function (error, stdout, stderr) {
         console.log(stdout);
-        callback()
+        callback();
         if (error) {
           callback('exec error: ' + error);
           process.exit(1);
@@ -61,8 +64,8 @@ exports.clearScreen = function(callback){
 
 
 exports.getInput = function(items, callback){
-    var uri; 
-    
+    var uri;
+        
     var rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
@@ -72,11 +75,11 @@ exports.getInput = function(items, callback){
         
         if (isNaN(cmd)){
             uri = getPageUri(cmd);
-            callback(uri)
             rl.close();
         }else{
             var timeout = 0;
             if (cmd > 0 && cmd <= items.length){
+                console.log(items[cmd - 1]);
                 openUrl(items[cmd - 1].href);
             }else{
                 timeout = 1000;
@@ -84,7 +87,7 @@ exports.getInput = function(items, callback){
             }
 
             setTimeout(function(){
-                callback(uri)
+                callback(uri);
                 rl.close();
             }, timeout);
         }

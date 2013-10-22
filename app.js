@@ -2,9 +2,8 @@
 'use strict';
 
 var async       = require('async');
-var hnService   = require("./hnService");
-var hnDisplay   = require("./hnDisplay")
-
+var hnService   = require('./hnService');
+var hnDisplay   = require('./hnDisplay');
 var uri = 'news';
 
 var go = function(uri){
@@ -22,17 +21,17 @@ var go = function(uri){
         },
         function(news, callback){
             hnDisplay.display(news);
-            callback();
+            callback(null, news, uri);
         },
-        function(news, callback){
-            hnDisplay.getInput(news, function(uri){
-                go(uri);
-                //callback();
+        function(news, uri, callback){
+            hnDisplay.getInput(news, function(_uri){
+                go(_uri || uri);
+                callback(null);
             });
         }
     ], function(err){
         if (err)
-            console.log('Something when wrong....');       
+            console.log('Something when wrong....');
     });
 };
 

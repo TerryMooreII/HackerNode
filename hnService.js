@@ -1,3 +1,5 @@
+'use strict';
+
 var http = require('https');
 var cheerio = require('cheerio');
 
