@@ -51,20 +51,16 @@ var openUrl = function(url){
 };
 
 var getPageUri = function(cmd){
-    switch(cmd){
-        case 'n':
+
+    switch(cmd.toUpperCase()){
         case 'N':
             return 'newest';
-        case 'a':
         case 'A':
             return 'ask';
-        case 'j':
         case 'J':
             return 'jobs';
-        case 'y':
         case 'Y':
             return 'news';  //this should return current uri.
-        case 'q':
         case 'Q':
             process.exit();
             break;
@@ -88,7 +84,7 @@ exports.display = function(items){
 
 exports.clearScreen = function(callback){
     var cmd = 'clear';
-    if (!!process.platform.match(/^win/));
+    if (process.platform === 'win32')
         cmd = 'cls';
 
     exec(cmd,  function (error, stdout, stderr) {
@@ -124,11 +120,11 @@ exports.getInput = function(items, callback){
                 timeout = 1000;
                 console.log('Invalid Command');
             }
-
-            setTimeout(function(){
-                callback(uri);
-                rl.close();
-            }, timeout);
         }
+        setTimeout(function(){
+            callback(uri);
+            rl.close();
+        }, timeout);
+        
     });
 };
